@@ -1,0 +1,20 @@
+syntax="proto3";
+
+option go_package = "github.com/VicenteRuizA/proto_lab3/broker_service";
+
+package broker_service;
+
+// continente reporta casos a oms
+service InformanteWrite {
+	rpc ExecuteCommand (CommandRequest) returns (CommandReply) {}
+}
+
+service InformanteWriteConflict {
+	rpc IdentifyCondition (SeverityRequest) returns (SeverityReply) {}
+}
+// ONU hace request a base de condicion de paciente a oms
+service VanguardiaRequest {
+	rpc RequestCondition (ConditionRequest) returns (ConditionReply) {}
+}
+
+
