@@ -1,0 +1,63 @@
+syntax="proto3";
+
+option go_package = "github.com/VicenteRuizA/proto_lab3/fulcrum_service";
+
+package fulcrum_service;
+
+message VectorClock {
+  int32 x = 1;
+  int32 y = 2;
+  int32 z = 3;
+}
+
+enum Action {
+  AGREGAR_BASE = 0;
+  RENOMBRAR_BASE = 1;
+  ACTUALIZAR_VALOR = 2;
+  BORRAR_BASE = 3;
+}
+
+// Informante ejecuta comando, broker maneja contacto con fulcrum
+service InformanteWrite {
+	rpc ExecuteCommand (CommandRequest) returns (CommandReply) {}
+}
+
+message CommandRequest {
+	string commando = 1;
+}
+
+
+// ip de a quien se conecto por ultima vez, al igual que
+// vector de reloj asociado a último cambio
+message CommandReply {
+    VectorClock vector_clock = 1;
+}
+
+
+// Broker pide informacion de enemigos en nombre de vanguardia a fulcrum
+service BrokerRequestFulcrum {
+	rpc EnemyInformationBroker (EnemyRequestBroker) returns (EnemyReplyBroker) {}
+}
+
+message EnemyRequestBroker {
+	string commando = 1;
+}
+
+message EnemyReplyBroker {
+	int32 enemigos =  1;
+    VectorClock vector_clock = 2;
+}
+
+// Broker pide informacion de enemigos en nombre de vanguardia a fulcrum
+service FulcrumUpdate {
+	rpc EnemyInformationBroker (EnemyRequestBroker) returns (EnemyReplyBroker) {}
+}
+
+message EnemyRequestBroker {
+	string commando = 1;
+}
+
+message EnemyReplyBroker {
+	int32 enemigos =  1;
+    VectorClock vector_clock = 2;
+}
