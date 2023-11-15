@@ -4,17 +4,81 @@ option go_package = "github.com/VicenteRuizA/proto_lab3/broker_service";
 
 package broker_service;
 
-// continente reporta casos a oms
-service InformanteWrite {
-	rpc ExecuteCommand (CommandRequest) returns (CommandReply) {}
+message VectorClock {
+  int32 x = 1;
+  int32 y = 2;
+  int32 z = 3;
 }
 
+enum Action {
+  AGREGAR_BASE = 0;
+  RENOMBRAR_BASE = 1;
+  ACTUALIZAR_VALOR = 2;
+  BORRAR_BASE = 3;
+}
+
+// Informante ejecuta comando, broker maneja contacto con fulcrum
+service WhereInformanteWrite {
+	rpc WhereExecuteCommand (WhereCommandRequest) returns (WhereCommandReply) {}
+}
+
+message WhereCommandRequest {
+	string commando = 1;
+}
+
+message WhereCommandReply {
+	int32 fulcrum =  1;
+}
+
+
+// Informante reportar conflicto en sus registros, broker actualiza fulcrum
 service InformanteWriteConflict {
-	rpc IdentifyCondition (SeverityRequest) returns (SeverityReply) {}
+	rpc ReportWriteConflict (InformanteConflictRequest) returns (InformanteConflictReply) {}
 }
-// ONU hace request a base de condicion de paciente a oms
-service VanguardiaRequest {
-	rpc RequestCondition (ConditionRequest) returns (ConditionReply) {}
+
+// Informante indica comando que tiró error e ip de fulcrum donde preguntó
+message InformanteConflictRequest {
+	string commando = 1;
+    VectorClock vector_clock = 2;
+	int32 fulcrum =  3;
+}
+
+// Broker responde con fulcrum al que le debe preguntar
+// Usualmente fulcrum 1 después de merge
+message InformanteConflictReply {
+	int32 fulcrum =  1;
 }
 
 
+
+// Informante reportar conflicto en sus registros, broker actualiza fulcrum
+service VanguardiaReadConflict {
+	rpc ReportReadConflict (VanguardiaConflictRequest) returns (VanguardiaConflictReply) {}
+}
+
+// Informante indica comando que tiró error e ip de fulcrum donde preguntó
+message VanguardiaConflictRequest {
+	string commando = 1;
+    VectorClock vector_clock = 2;
+	int32 fulcrum =  3;
+}
+
+// Broker responde con fulcrum al que le debe preguntar
+// Usualmente fulcrum 1 después de merge
+message VanguardiaConflictReply {
+	string conflictSolved =  1;
+}
+
+// Vanguardia pide informacion de enemigos a traves de broker
+service VanguardiaRequestBroker {
+	rpc EnemyInformationVanguardia (EnemyRequestVanguardia) returns (EnemyReplyVanguardia) {}
+}
+
+message EnemyRequestVanguardia {
+	string commando = 1;
+}
+
+message EnemyReplyVanguardia {
+	int32 enemigos =  1;
+    VectorClock vector_clock = 2;
+}

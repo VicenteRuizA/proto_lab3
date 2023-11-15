@@ -48,16 +48,3 @@ message EnemyReplyBroker {
     VectorClock vector_clock = 2;
 }
 
-// Broker pide informacion de enemigos en nombre de vanguardia a fulcrum
-service FulcrumUpdate {
-	rpc EnemyInformationBroker (EnemyRequestBroker) returns (EnemyReplyBroker) {}
-}
-
-message EnemyRequestBroker {
-	string commando = 1;
-}
-
-message EnemyReplyBroker {
-	int32 enemigos =  1;
-    VectorClock vector_clock = 2;
-}
