@@ -1,4 +1,4 @@
-module github.com/VicenteRuizA/proto_lab3/tree/main/broker_service
+module github.com/VicenteRuizA/proto_lab3/broker_service
 
 go 1.21.3
 
